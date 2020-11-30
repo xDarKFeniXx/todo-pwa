@@ -9,12 +9,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh';
 import IconButton from "@material-ui/core/IconButton";
 import Brightness4Icon from '@material-ui/icons/Brightness4';
-import Box from "@material-ui/core/Box";
 import theme from '../../theme';
 import {Routes} from '../../routes';
 import {Copyright} from "./copyright";
 import {Typography} from "@material-ui/core";
-import { MenuList } from './menu-list';
+import {MenuList} from './menu-list';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     header: {
-        gridArea: "header"
+        gridArea: "header",
     },
     menu: {
         gridArea: "menu",
@@ -48,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         height: "100%"
     },
+    scrollComponent:{
+        height: "80vh",
+        overflow: 'auto',
+    },
     containerHeader: {
         display: "flex",
         flexGrow: 1,
@@ -60,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 export const Layout = () => {
+    const location=useLocation()
     const classes = useStyles()
     const [darkState, setDarkState] = useState(true);
     const palletType = darkState ? "dark" : "light";
@@ -84,7 +89,7 @@ export const Layout = () => {
                 >
                     <Toolbar>
                         <div className={classes.containerHeader}>
-                            <Typography component="h1" variant="h6">main text</Typography>
+                            <Typography component="h1" variant="h6">{ location.pathname.split('/')[1].toUpperCase()||"HOME"}</Typography>
                             <IconButton color="inherit" aria-label="switch theme" component="div"
                                         onClick={handleThemeChange}>
                                 {darkState ? <BrightnessHighIcon/> : <Brightness4Icon/>}
@@ -94,7 +99,7 @@ export const Layout = () => {
                 </AppBar>
                 <div className={classes.menu}><MenuList/></div>
                 <main className={classes.content}>
-                    <Container maxWidth="lg">
+                    <Container maxWidth="lg" className={classes.scrollComponent}>
 
                         <Routes/>
 

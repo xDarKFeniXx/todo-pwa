@@ -9,7 +9,9 @@ import PeopleIcon from '@material-ui/icons/People';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import InfoIcon from '@material-ui/icons/Info';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
+import {useTheme} from '@material-ui/core/styles';
+import clsx from 'clsx';
+import HomeIcon from '@material-ui/icons/Home';
 
 function a11yProps(index: any) {
     return {
@@ -18,13 +20,17 @@ function a11yProps(index: any) {
         'aria-controls': `tabpanel-${index}`
     }
 }
-//TODO исправить цвет paper при изменении темы
+
 //TODO добавить стили для выделенного элемента
 
 const useStyles = makeStyles((theme: Theme) => ({
     root:{
-        marginTop: theme.spacing(2)
+        marginTop: theme.spacing(2),
 
+    },
+    lightTabs:{
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText
     },
     wrapper:{
         flexDirection: "column",
@@ -39,22 +45,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 export const MenuList = () => {
     const classes = useStyles();
     const history=useHistory()
-    const location=useLocation()
+    const location=useLocation().pathname.split('/')[1]
     const theme=useTheme()
     const matchesQuery=useMediaQuery(theme.breakpoints.down('sm'))
-    const [value, setValue] = React.useState("/todos");
+    const [value, setValue] = React.useState("");
     useEffect(()=>{
-        if(location.pathname!==value){
-            setValue(location.pathname)
+        if(location!==value){
+            setValue(location)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
-        history.push(newValue)
+        history.push("/"+newValue)
         setValue(newValue);
     };
     return (
-        <Paper className={classes.root}>
+        <Paper
+            className={clsx(classes.root, theme.palette.type==="light" && classes.lightTabs)}
+
+        >
         <Tabs
             orientation={matchesQuery? "horizontal": "vertical"}
             variant="fullWidth"
@@ -65,15 +74,21 @@ export const MenuList = () => {
 
         >
             <Tab
+                label="home"
+                {...a11yProps("")}
+                icon={<HomeIcon/>}
+                classes={!matchesQuery? {wrapper:classes.wrapper}:{}}
+            />
+            <Tab
                 label="todos"
-                {...a11yProps("/todos")}
+                {...a11yProps("todos")}
                 icon={<FormatListBulletedIcon/>}
                 classes={!matchesQuery? {wrapper:classes.wrapper}:{}}
             />
-            <Tab label="users" {...a11yProps("/users")}  icon={<PeopleIcon />}
+            <Tab label="users" {...a11yProps("users")}  icon={<PeopleIcon />}
                  classes={!matchesQuery? {wrapper:classes.wrapper}:{}}
             />
-            <Tab label="About" {...a11yProps("/about")} icon={<InfoIcon/>}
+            <Tab label="About" {...a11yProps("about")} icon={<InfoIcon/>}
                  classes={!matchesQuery? {wrapper:classes.wrapper}:{}}
             />
         </Tabs>

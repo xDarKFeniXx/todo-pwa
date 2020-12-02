@@ -6,8 +6,18 @@ import {TodoPage} from "./pages/todos-page/todo-page";
 import {AboutPage} from "./pages/about-page/about-page";
 import {UserPage} from "./pages/users-page/user-page";
 import {AllUsersPage} from "./pages/users-page/all-users-page";
+import {useSelector} from "react-redux";
+import {appErrorSelector} from "./store/app-reducer/app-reducer-selectors";
+import {ErrorPage} from "./pages/error-page/error-page";
 
 export const Routes = () => {
+    const error=useSelector(appErrorSelector)
+    if(error.showError){
+        return(
+            <ErrorPage errorText={error.textError}/>
+        )
+    }
+
     return (
         <Switch>
             <Route exact path='/'>

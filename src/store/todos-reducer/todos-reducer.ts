@@ -46,8 +46,8 @@ export const toggleTodoActionCreator=(id:number)=>({
     type: TOGGLE_TODO,
     payload: id
 })
-export const fetchToggleTodoActionCreator=(id:number)=>({
+export const fetchToggleTodoActionCreator=(id:number, value:boolean)=>({
     type: FETCH_TOGGLE_TODO, //TODO а нужен ли? можно отследить обычный тогл туду
-    payload: id
+    payload: {id, value}
 })
 export default todosReducer

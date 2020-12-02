@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         height: "100%"
     },
     scrollComponent:{
-        height: "80vh",
+        height: "79vh",
         overflow: 'auto',
     },
     containerHeader: {

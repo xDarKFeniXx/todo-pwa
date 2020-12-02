@@ -47,7 +47,6 @@ export const TodoItem = (item:TodoI) => {
             <ListItemSecondaryAction onClick={handleClickAvatar}>
             <ListItemAvatar >
                 <Avatar
-
                     alt={`Avatar n°${item.userId}`}
                     src={`https://picsum.photos/200/300`}
                 />

@@ -30,3 +30,20 @@ export type APIResponseType<D = {}> = {
     data: D
     status:number
 }
+type addressType={
+    street:string,
+    suite:string,
+    city:string,
+    zipcode:string,
+    geo:{ lat:string, lng:string}
+}
+export interface UserI{
+    id:number|string,
+    name:string,
+    email:string,
+    address:addressType,
+    phone:string,
+    website:string,
+    company: {name:string, catchPhrase:string,bs:string }
+}
+

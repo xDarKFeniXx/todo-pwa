@@ -10,6 +10,6 @@ const rootReducer=combineReducers({
 })
 
 export default rootReducer
-export type RootReducerType = typeof rootReducer;
 
-export type AppStateType = ReturnType<RootReducerType>
+
+export type AppStateType = ReturnType<typeof rootReducer>

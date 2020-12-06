@@ -47,3 +47,4 @@ export interface UserI{
     company: {name:string, catchPhrase:string,bs:string }
 }
 
+export type InferActionsTypes<T> = T extends { [keys: string]: (...args: any[]) => infer U } ? U : never

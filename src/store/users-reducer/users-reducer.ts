@@ -1,4 +1,4 @@
-import {LoadingEnum, UserI} from "../types";
+import {InferActionsTypes, LoadingEnum, UserI} from "../types";
 
 const initialState={
     loading:LoadingEnum.NEVER,
@@ -8,7 +8,7 @@ export const SET_USERS="users/SET_USERS"
 export const FETCH_USERS="users/FETCH_USERS"
 export const LOADING="users/LOADING"
 export const LOADED="users/LOADED"
-const usersReducer=(state=initialState, action:userReducerActionTypes)=>{
+const usersReducer=(state=initialState, action:ActionsTypes)=>{
     switch(action.type){
         case LOADING:{
             return {...state, loading: LoadingEnum.LOADING}
@@ -23,12 +23,12 @@ const usersReducer=(state=initialState, action:userReducerActionTypes)=>{
             return state
     }
 }
-export type fetchUsersActionType={
-    type:typeof FETCH_USERS
-}
-export type setUsersActionType={
-    type: typeof SET_USERS,
-    payload: Array<UserI>
+
+export const usersReducerActions={
+    setLoadingAC: ()=>({type: LOADING} as const),
+    setLoadedAC: ()=>({type:LOADED} as const),
+    setUsersAC: (users:Array<UserI>)=>({type:SET_USERS, payload:users} as const),
+    fetchUsersAC: ()=>({type:FETCH_USERS} as const),
 }
 export default usersReducer
-type userReducerActionTypes=setUsersActionType|{type:typeof LOADING}|{type:typeof LOADED}
+type ActionsTypes = InferActionsTypes<typeof usersReducerActions>

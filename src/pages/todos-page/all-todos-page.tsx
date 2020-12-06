@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {loadingTodosSelector, todosSelector} from '../../store/todos-reducer/todos-reducer-selectors';
 import {LoadingEnum, TodoI} from "../../store/types";
-import {fetchAddTodoActionCreator, fetchTodosActionCreator} from "../../store/todos-reducer/todos-reducer";
+import {todoReducerActions} from "../../store/todos-reducer/todos-reducer";
 import {TodoItem} from "../../components/todo/todo-item";
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -43,7 +43,7 @@ export const AllTodosPage = () => {
     const loading=useSelector(loadingTodosSelector)
     useEffect(()=>{
         if(loading===LoadingEnum.NEVER){
-            dispatch(fetchTodosActionCreator())
+            dispatch(todoReducerActions.fetchTodosAC())
         }
     }, [loading, dispatch])
     const [open, setOpen] = useState(false)
@@ -64,7 +64,7 @@ export const AllTodosPage = () => {
         setUserId(+e.target.value)
     }
     const handleAddNewTodo=()=>{
-        dispatch(fetchAddTodoActionCreator(title, userId))
+        dispatch(todoReducerActions.fetchAddTodoAC(title, userId))
         setUserId(1)
         setTitle('')
         setOpen(false)

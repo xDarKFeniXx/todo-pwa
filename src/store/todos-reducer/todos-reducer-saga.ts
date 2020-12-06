@@ -1,72 +1,61 @@
-import {call, put, takeLatest, takeEvery} from "redux-saga/effects"
+import {call, put, takeEvery, takeLatest} from "redux-saga/effects"
 import {todosAPI} from "../../api/todos-api";
-import {SET_ERROR} from "../app-reducer/app-reducer";
-import {
-    ADD_TODO, FETCH_ADD_TODO,
-    FETCH_TODOS,
-    FETCH_TOGGLE_TODO, fetchAddTodoActionType,
-    LOADED,
-    LOADING,
-    setTodosActionCreator,
-    TOGGLE_TODO,
-    fetchEditTodoActionType, FETCH_EDIT_TODO, EDIT_TODO
-} from "./todos-reducer";
+import {appReducerActions} from "../app-reducer/app-reducer";
+import {FETCH_ADD_TODO, FETCH_EDIT_TODO, FETCH_TODOS, FETCH_TOGGLE_TODO, todoReducerActions} from "./todos-reducer";
 
 
 function* fetchTodos() {
-    yield put({type: LOADING})
+    yield put(todoReducerActions.setLoadingStatusAC())
     try {
-
         const response = yield call(todosAPI.getAllTodos)
         if (response.status === 200) {
-            yield put(setTodosActionCreator(response.data))
+            yield put(todoReducerActions.setTodosAC(response.data))
         }//TODO сделать обработку статуса ответа
     } catch (e) {
-        yield put({type: SET_ERROR, payload: e.message})
+        yield put(appReducerActions.setGlobalError(e.message))
     } finally {
         //TODO сделать шину ошибок и уведомлений
-        yield put({type: LOADED})
+        yield put(todoReducerActions.setLoadedStatusAC())
     }
 }
 
-function* fetchToggleTodo(action: any) {
-    yield put({type: LOADING})
+function* fetchToggleTodo(action: ReturnType<typeof todoReducerActions.fetchToggleTodoAC>) {
+    yield put(todoReducerActions.setLoadingStatusAC())
     try {
         const response = yield call(todosAPI.toggleTodo, action.payload.id, action.payload.value)
         if (response.status===200) {
-            yield put({type: TOGGLE_TODO, payload: action.payload.id})
+            yield put(todoReducerActions.toggleTodoAC(action.payload.id))
         }
     } catch (e) {
-        yield put({type: SET_ERROR, payload: e.message})
+        yield put(appReducerActions.setGlobalError(e.message))
     } finally {
-        yield put({type: LOADED})
+        yield put(todoReducerActions.setLoadedStatusAC())
     }
 }
-function* addTodo(action:fetchAddTodoActionType){
-    yield put({type: LOADING})
+function* addTodo(action:ReturnType<typeof todoReducerActions.fetchAddTodoAC>){
+    yield put(todoReducerActions.setLoadingStatusAC())
     try{
         const response=yield call(todosAPI.addTodo, action.payload.title, action.payload.userId)
         if (response.status===201) {
-            yield put({type: ADD_TODO, payload: response.data})
+            yield put(todoReducerActions.addTodoAC(response.data))
         }
     } catch (e) {
-        yield put({type: SET_ERROR, payload: e.message})
+        yield put(appReducerActions.setGlobalError(e.message))
     } finally {
-        yield put({type: LOADED})
+        yield put(todoReducerActions.setLoadedStatusAC())
     }
 }
-function* editTodo(action:fetchEditTodoActionType){
-    yield put({type: LOADING})
+function* editTodo(action:ReturnType<typeof todoReducerActions.fetchEditTodoAC>){
+    yield put(todoReducerActions.setLoadingStatusAC())
     try{
     const response=yield call(todosAPI.editTodo, action.payload)
-        console.log(response)
         if(response.status===200){
-            yield put({type: EDIT_TODO, payload:action.payload})
+            yield put(todoReducerActions.editTodoAC(action.payload))
         }
     } catch (e) {
-        yield put({type: SET_ERROR, payload: e.message})
+        yield put(appReducerActions.setGlobalError(e.message))
     } finally {
-        yield put({type: LOADED})
+        yield put(todoReducerActions.setLoadedStatusAC())
     }
 }
 export default function* todoSaga() {

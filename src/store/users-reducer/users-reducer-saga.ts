@@ -1,23 +1,23 @@
 import {call, put, takeLatest} from "redux-saga/effects"
 
-import {SET_ERROR} from "../app-reducer/app-reducer";
-import {FETCH_USERS, LOADED, LOADING, SET_USERS} from "./users-reducer";
+import {appReducerActions} from "../app-reducer/app-reducer";
+import {FETCH_USERS, usersReducerActions} from "./users-reducer";
 import {userAPI} from "../../api/users-api";
+import {APIResponseType, UserI} from "../types";
 
 
 function* fetchUsers(){
-    yield put({type: LOADING})
+    yield put(usersReducerActions.setLoadingAC())
     try {
-
-        const response = yield call(userAPI.fetchUsers)
+        const response: APIResponseType<Array<UserI>> =yield call(userAPI.fetchUsers)
         if (response.status === 200) {
-            yield put({type:SET_USERS, payload:response.data})
+            yield put(usersReducerActions.setUsersAC(response.data))
         }//TODO сделать обработку статуса ответа
     } catch (e) {
-        yield put({type: SET_ERROR, payload: e.message})
+        yield put(appReducerActions.setGlobalError(e.message))
     } finally {
         //TODO сделать шину ошибок и уведомлений
-        yield put({type: LOADED})
+        yield put(usersReducerActions.setLoadedAC())
     }
 
 }

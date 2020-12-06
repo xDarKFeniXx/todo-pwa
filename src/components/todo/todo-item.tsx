@@ -9,7 +9,7 @@ import {ListItem, ListItemIcon} from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import {useDispatch} from "react-redux";
-import {fetchToggleTodoActionCreator} from "../../store/todos-reducer/todos-reducer";
+import {todoReducerActions} from "../../store/todos-reducer/todos-reducer";
 
 const useStyles = makeStyles(theme=>({
     root: {
@@ -33,7 +33,7 @@ export const TodoItem = (item:TodoI) => {
         history.push(`/users/${item.userId}`)
     }
     const handleToggle=()=>{
-        dispatch(fetchToggleTodoActionCreator(item.id, !item.completed))
+        dispatch(todoReducerActions.fetchToggleTodoAC(item.id, !item.completed))
     }
     return (
         <ListItem key={item.id} className={classes.root} button onClick={handleToggle} onDoubleClick={handleClickItem}>

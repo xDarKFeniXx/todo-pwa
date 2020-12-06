@@ -1,4 +1,4 @@
-import {ErrorI, LoadingEnum, NotificationI} from "../types"
+import {ErrorI, InferActionsTypes, LoadingEnum, NotificationI} from "../types"
 
 
 const initialState = {
@@ -9,7 +9,7 @@ const initialState = {
 export const SET_ERROR="app/SET_ERROR"
 export const LOADING="app/LOADING"
 export const LOADED="app/LOADED"
-const appReducer = (state = initialState, action: any) => {
+const appReducer = (state = initialState, action: ActionsTypes) => {
     switch (action.type) {
         case LOADING:{
             return {...state, loading: LoadingEnum.LOADING}
@@ -25,9 +25,14 @@ const appReducer = (state = initialState, action: any) => {
     }
 }
 
-export const setErrorActionCreator=(textError:string)=>({
-    type:SET_ERROR,
-    payload: textError
-})
 
+export const appReducerActions={
+    setGlobalError: (textError:string)=>({
+        type:SET_ERROR,
+        payload: textError
+    } as const),
+    setGlobalLoading: ()=>({type: LOADING} as const),
+    setGlobalLoaded: ()=>({type: LOADED} as const),
+}
+type ActionsTypes = InferActionsTypes<typeof appReducerActions>
 export default appReducer

@@ -2,9 +2,13 @@ import {InferActionsTypes, LoadingEnum, TodoI} from "../types";
 
 const initialState={
     loading:LoadingEnum.NEVER,
-    todosList:[] as Array<TodoI>
+    todosList:[] as Array<TodoI>,
+    currentPage:1,
+    maxTotalCount: 0,
+    pageSize:5
 }
 export const FETCH_TODOS="todos/FETCH_TODOS"
+export const CHANGE_CURRENT_PAGE="todos/CHANGE_CURRENT_PAGE"
 export const LOADING="todos/LOADING"
 export const LOADED="todos/LOADED"
 export const SET_TODOS="todos/SET_TODOS"
@@ -23,7 +27,7 @@ const todosReducer=(state=initialState, action:ActionsTypes):InitialState=>{
             return {...state, loading: LoadingEnum.LOADED}
         }
         case SET_TODOS:{
-            return {...state, todosList: action.payload}
+            return {...state, todosList: action.payload.todos, maxTotalCount: action.payload.maxCount}
         }
         case TOGGLE_TODO:{
             const index=state.todosList.findIndex(item=>item.id===action.payload)
@@ -50,6 +54,9 @@ const todosReducer=(state=initialState, action:ActionsTypes):InitialState=>{
             todosList: [action.payload, ...state.todosList]
             }
         }
+        case CHANGE_CURRENT_PAGE:{
+            return {...state, currentPage: action.payload}
+        }
         default:
             return state
     }
@@ -63,12 +70,13 @@ export const todoReducerActions={
     setLoadedStatusAC:()=>({
         type: LOADED
     } as const),
-    fetchTodosAC:()=>({
-        type: FETCH_TODOS
+    fetchTodosAC:(page:number)=>({
+        type: FETCH_TODOS,
+        payload:page
     } as const),
-    setTodosAC:(todos:Array<TodoI>)=>({
+    setTodosAC:(todos:Array<TodoI>, maxCount:number)=>({
         type:SET_TODOS,
-        payload:todos
+        payload: {todos, maxCount}
     } as const),
     toggleTodoAC:(id:number)=>({
         type: TOGGLE_TODO,
@@ -98,6 +106,10 @@ export const todoReducerActions={
         type: FETCH_ADD_TODO,
         payload: {title, userId}
     } as const),
+    changeCurrentPageAC:(page:number)=>({
+        type:CHANGE_CURRENT_PAGE,
+        payload: page
+    } as const)
 }
 type InitialState = typeof initialState;
 type ActionsTypes = InferActionsTypes<typeof todoReducerActions>

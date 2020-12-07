@@ -1,6 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {loadingTodosSelector, todosSelector} from '../../store/todos-reducer/todos-reducer-selectors';
+import {
+    currentPageSelector,
+    loadingTodosSelector,
+    pagesCountSelector,
+    todosSelector
+} from '../../store/todos-reducer/todos-reducer-selectors';
 import {LoadingEnum, TodoI} from "../../store/types";
 import {todoReducerActions} from "../../store/todos-reducer/todos-reducer";
 import {TodoItem} from "../../components/todo/todo-item";
@@ -11,6 +16,7 @@ import {Theme} from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import Pagination from '@material-ui/lab/Pagination';
 import {
     Button,
     Dialog,
@@ -41,11 +47,16 @@ export const AllTodosPage = () => {
     const dispatch=useDispatch()
     const todosList=useSelector(todosSelector)
     const loading=useSelector(loadingTodosSelector)
+    const currentPage=useSelector(currentPageSelector)
+    const maxPagesTotalCount=useSelector(pagesCountSelector)
     useEffect(()=>{
         if(loading===LoadingEnum.NEVER){
-            dispatch(todoReducerActions.fetchTodosAC())
+            dispatch(todoReducerActions.fetchTodosAC(currentPage))
         }
-    }, [loading, dispatch])
+    }, [currentPage, loading, dispatch])
+    useEffect(()=>{
+        dispatch(todoReducerActions.fetchTodosAC(currentPage))
+    }, [dispatch, currentPage])
     const [open, setOpen] = useState(false)
     const [title, setTitle] = useState("")
     const [userId, setUserId] = useState(1)
@@ -59,8 +70,12 @@ export const AllTodosPage = () => {
     const handleChangeTitle=(e: React.ChangeEvent<HTMLInputElement>)=>{
         setTitle(e.target.value)
     }
+    const handleChangeCurrentPage=(event:any, value:number)=>{
+        console.log(value)
+        dispatch(todoReducerActions.changeCurrentPageAC(value))
+    }
     //TODO select user
-    const handleChangeUser=(e:any)=>{
+    const handleChangeUser=(e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)=>{
         setUserId(+e.target.value)
     }
     const handleAddNewTodo=()=>{
@@ -71,7 +86,6 @@ export const AllTodosPage = () => {
     }
     if(loading===LoadingEnum.LOADING){
         //TODO сделать скелетон
-        //TODO сдлеать пагинацию
         return(
             <Backdrop className={classes.backdrop} open>
                 <CircularProgress color="inherit" />
@@ -80,9 +94,13 @@ export const AllTodosPage = () => {
     }
     return (
         <>
+
         <List>
+
         {todos}
         </List>
+            {currentPage ? <Pagination count={maxPagesTotalCount} page={currentPage} onChange={handleChangeCurrentPage}/> : null}
+            {/*TODO разместить внизу и по центру*/}
             <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={handleOpen}>
                 <AddIcon />
             </Fab>
@@ -103,6 +121,7 @@ export const AllTodosPage = () => {
                         onChange={handleChangeTitle}
                         fullWidth
                     />
+
                     <TextField
                         id="standard-select-currency"
                         select
@@ -112,9 +131,11 @@ export const AllTodosPage = () => {
                         helperText="Выберите пользователя"
                         onChange={handleChangeUser}
                     >
+
                         <option value="1">Вы</option>
                         <option value="2">Кто-то</option>
                     </TextField>
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">

@@ -3,8 +3,8 @@ import {APIResponseType, TodoI} from "../store/types";
 
 
 export const todosAPI = {
-    async getAllTodos() {
-        return await instance.get<APIResponseType<Array<TodoI>>>('todos')
+    async getAllTodos(page=1, pageSize=5) {
+        return await instance.get<APIResponseType<Array<TodoI>>>(`todos?_page=${page}&_limit=${pageSize}`)
     },
     async toggleTodo(id: number, value: boolean) {
         return await instance.patch(`todos/${id}`, {completed: value})
